@@ -1,0 +1,7 @@
+## Interface: 70100
+## Title: Warlockbox
+## Author: Zaperox
+## Version: 0.01
+## Notes: Displays information on vulnerable
+
+main.lua
