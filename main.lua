@@ -1,6 +1,5 @@
 local alreadyRegistered = false
-local playerGUID
-local expirationTime
+Hunterbox_PingCoefficient = 0.400 --Assume about 400ms ping
 
 local function ShowWindow(bool)
     if(bool and InCombatLockdown()) then
@@ -29,32 +28,13 @@ HunterboxGUI:SetHeight(10)
 HunterboxGUI:SetPoint("CENTER")
 HunterboxGUI:SetMovable(false)
 
-local VulnerableGUI = CreateFrame("Frame", "VulnerableGUI", HunterboxGUI)
-VulnerableGUI:SetBackdrop({
-	bgFile = "Interface\\Icons\\ability_hunter_mastermarksman",
-	edgeFile = "Interface\\tooltips\\UI-tooltip-Border",
-	tile = true,
-	tileSize = 64,
-	edgeSize = 8,
-	insets = {
-		left = 1,
-		right = 1,
-		top = 1,
-		bottom = 1,
-	},
-})
-VulnerableGUI:SetWidth(64)
-VulnerableGUI:SetHeight(64)
-VulnerableGUI:SetPoint("CENTER", 50, 50)
+Vulnerable_Create()
+local VulnerableGUI
+local VulnerableCooldownGUI
 
-local VulnerableCooldownGUI = CreateFrame("Cooldown", "VulnerableCooldownGUI", VulnerableGUI, "CooldownFrameTemplate")
-VulnerableCooldownGUI:SetAllPoints()
-VulnerableCooldownGUI:SetWidth(64)
-VulnerableCooldownGUI:SetHeight(64)
-VulnerableCooldownGUI:SetPoint("CENTER", 0, 0)
-VulnerableCooldownGUI:Show()
-VulnerableCooldownGUI:SetAllPoints()
-
+AimedShot_Create()
+local AimedShotGUI
+local AimedShotCooldownGUI
 
 local function isMarksmanship()
 	if (GetSpecialization() == 2) then
@@ -78,7 +58,6 @@ if (isHunter() and isMarksmanship()) then
 		if not alreadyRegistered then
 			HunterboxGUI:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			alreadyRegistered = true
-			_, _, _, EmpowermentcastingTime = GetSpellInfo(193396)
 		end
 		ShowWindow(true)
 	else
@@ -104,7 +83,6 @@ function HunterboxGUI:ACTIVE_TALENT_GROUP_CHANGED(self, event, ...)
 end
 
 function HunterboxGUI:PLAYER_ENTERING_WORLD(self, event, ...)
-	playerGUID = UnitGUID("player")
 	
     if(Settings.UseEggo) then
         demonCounter:SetFont("Interface\\AddOns\\Hunterbox\\Eggo.ttf", 24, "OUTLINE")
@@ -129,13 +107,6 @@ function HunterboxGUI:PLAYER_ENTERING_WORLD(self, event, ...)
 	HunterboxGUI:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
-function HunterboxGUI:PLAYER_TARGET_CHANGED(self, event, ...)
-
-end
-
-function HunterboxGUI:UNIT_AURA(self, event, ...)
-end
-
 function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)  
     if(not InCombatLockdown()) then
         HunterboxGUI:Hide()
@@ -143,7 +114,6 @@ function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)
         HunterboxGUI:Show()
     end
 
-	local compTime = GetTime()
 	local combatEvent = select(1, ...)
 	local sourceGUID = select(3, ...)
 	local sourceName = select(4, ...)
@@ -152,17 +122,8 @@ function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)
     local spellId = select(11, ...)
     local spellName = select(12, ...)
 	
-    local Debuff = UnitDebuff("target", "Vulnerable");
-    expirationTime = select(7,UnitDebuff("target","Vulnerable"))
-    if(UnitDebuff("target", "Vulnerable") ~= nil) then
-        VulnerableGUI:Show()
-        if(spellName == "Marked Shot" and destGUID == UnitGUID("target")) then
-            print()
-            VulnerableCooldownGUI:SetCooldown(GetTime(), expirationTime-GetTime())
-        end
-    else
-        VulnerableGUI:Hide()
-    end
+    Vulnerable_CombatLog(spellName, destGUID)
+    AimedShot_CombatLog(spellName, destGUID)
 end
 
 HunterboxGUI:SetScript("OnEvent", function(self, event, ...)

@@ -4,4 +4,6 @@
 ## Version: 0.01
 ## Notes: Displays information on vulnerable
 
+Vulnerable.lua
+AimedShot.lua
 main.lua
