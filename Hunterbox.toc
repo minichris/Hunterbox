@@ -6,4 +6,5 @@
 
 Vulnerable.lua
 AimedShot.lua
+Count.lua
 main.lua

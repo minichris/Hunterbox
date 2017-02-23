@@ -34,6 +34,9 @@ local VulnerableCooldownGUI
 
 AimedShot_Create()
 
+Count_Create()
+
+
 local function isMarksmanship()
 	if (GetSpecialization() == 2) then
         return true
@@ -122,6 +125,7 @@ function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)
 	
     Vulnerable_CombatLog(spellName, destGUID)
     AimedShot_CombatLog(spellName, destGUID)
+    Count_CombatLog(...)
 end
 
 HunterboxGUI:SetScript("OnEvent", function(self, event, ...)
