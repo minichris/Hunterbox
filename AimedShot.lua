@@ -1,11 +1,16 @@
 function AimedShot_Create()
     print("AimedShot Module Loaded")
-    AimedShotGUI = CreateFrame("Frame", "AimedShotGUI", GUI)
-    AimedShotGUI:SetBackdrop({
+    
+    
+end
+
+function Create_Cooldown(InputGUI, yLocation, TimeLeft)
+    InputGUI = CreateFrame("Frame", "AimedShotGUI", UIParent)
+    InputGUI:SetBackdrop({
         bgFile = "Interface\\Icons\\Inv_spear_07",
         edgeFile = "Interface\\tooltips\\UI-tooltip-Border",
         tile = true,
-        tileSize = 64,
+        tileSize = 32,
         edgeSize = 8,
         insets = {
             left = 1,
@@ -14,29 +19,37 @@ function AimedShot_Create()
             bottom = 1,
         },
     })
-    AimedShotGUI:SetWidth(64)
-    AimedShotGUI:SetHeight(64)
-    AimedShotGUI:SetPoint("CENTER", -50, 50)
+    InputGUI:SetWidth(32)
+    InputGUI:SetHeight(32)
+    InputGUI:SetPoint("CENTER", -50, yLocation)
 
-    AimedShotCooldownGUI = CreateFrame("Cooldown", "AimedShotCooldownGUI", AimedShotGUI, "CooldownFrameTemplate")
-    AimedShotCooldownGUI:SetAllPoints()
-    AimedShotCooldownGUI:SetWidth(64)
-    AimedShotCooldownGUI:SetHeight(64)
-    AimedShotCooldownGUI:SetPoint("CENTER", 0, 0)
-    AimedShotCooldownGUI:Show()
-    AimedShotCooldownGUI:SetAllPoints()
+    CooldownPinwheelGUI = CreateFrame("Cooldown", "AimedShotCooldownGUI", InputGUI, "CooldownFrameTemplate")
+    CooldownPinwheelGUI:SetWidth(32)
+    CooldownPinwheelGUI:SetHeight(32)
+    CooldownPinwheelGUI:SetPoint("CENTER", 0, 0)
+    CooldownPinwheelGUI:Show()
+    CooldownPinwheelGUI:SetAllPoints()
+    
+    C_Timer.After(TimeLeft, function() 
+        InputGUI:Hide() 
+    end)
+    
+    CooldownPinwheelGUI:SetCooldown(GetTime(), TimeLeft)
+    
+    return CooldownPinwheelGUI
 end
 
 function AimedShot_CombatLog(spellName, destGUID)
-    -- Aimed Shot timer
+    local GlobalCooldown = 1;
+    local VulnerableLength = 7 --hard coded for now
+    local AimedShotLength = select(4,GetSpellInfo("Aimed Shot"))/1000
     local expirationTime = select(7, UnitDebuff("target", "Vulnerable"))
-    if(UnitDebuff("target", "Vulnerable") ~= nil) then
-        AimedShotGUI:Show()
-        if( (spellName == "Marked Shot" or spellName == "Windburst") and destGUID == UnitGUID("target") ) then
-            local AimedShotCastTime = select(4,GetSpellInfo("Aimed Shot"))/1000
-            AimedShotCooldownGUI:SetCooldown(GetTime(), expirationTime - GetTime() - AimedShotCastTime - Hunterbox_PingCoefficient)
+    if(UnitDebuff("target", "Vulnerable") ~= nil) then --if the target has Vulnerable
+        if( (spellName == "Marked Shot" or spellName == "Windburst") and destGUID == UnitGUID("target") ) then --if it is newly appiled
+            for i = 1, floor( (VulnerableLength - GlobalCooldown) / AimedShotLength) do
+                local TimerLength = expirationTime - GetTime() - AimedShotLength - Hunterbox_PingCoefficient
+                CooldownGUI = Create_Cooldown(AimedShotGUI, i * 32 - 50, TimerLength - ( (i-1) * AimedShotLength + Hunterbox_PingCoefficient))
+            end
         end
-    else
-        AimedShotGUI:Hide()
     end
 end

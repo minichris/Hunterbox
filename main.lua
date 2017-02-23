@@ -33,8 +33,6 @@ local VulnerableGUI
 local VulnerableCooldownGUI
 
 AimedShot_Create()
-local AimedShotGUI
-local AimedShotCooldownGUI
 
 local function isMarksmanship()
 	if (GetSpecialization() == 2) then
