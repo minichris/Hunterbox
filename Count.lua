@@ -2,7 +2,33 @@ VulnerableCount = 0
 
 function Count_Create()
     print("Vulnerable Count Module Loaded")
+    HunterboxCountGUI = CreateFrame("Frame", "HunterboxCountGUI", VulnerableGUI)
+    HunterboxCountGUI:SetBackdrop({
+        bgFile = "Interface\\dialogframe\\ui-dialogbox-background-dark",
+        edgeFile = "Interface\\tooltips\\UI-tooltip-Border",
+        tile = true,
+        tileSize = 32,
+        edgeSize = 8,
+        insets = {
+            left = 1,
+            right = 1,
+            top = 1,
+            bottom = 1,
+        },
+    })
+    HunterboxCountGUI:SetWidth(70)
+    HunterboxCountGUI:SetHeight(30)
+    HunterboxCountGUI:SetPoint("RIGHT", VulnerableGUI, 40, 0)
+    HunterboxCountGUI:SetMovable(false)
+    HunterboxCountGUI:SetFrameStrata("LOW") --stick it behind the vulnerableGUI
     
+    VulnerableCountString = HunterboxCountGUI:CreateFontString("VulnerableCountString")
+    VulnerableCountString:SetFont("Interface\\AddOns\\Warlockbox\\Eggo.ttf", 24, "OUTLINE")
+    VulnerableCountString:SetTextColor(1, 1, 1, 1)
+    VulnerableCountString:SetText("")
+    VulnerableCountString:SetJustifyH("CENTER")
+    VulnerableCountString:SetJustifyV("CENTER")
+    VulnerableCountString:SetPoint("RIGHT", HunterboxCountGUI, -10, -2)
 end
 
 function Count_CombatLog(...)
@@ -19,8 +45,8 @@ function Count_CombatLog(...)
         VulnerableCount = VulnerableCount + 1
         C_Timer.After(VulnerableLength, function() 
             VulnerableCount = VulnerableCount - 1
-            print(VulnerableCount)
+            VulnerableCountString:SetText(VulnerableCount)
         end)
-        print(VulnerableCount)
+        VulnerableCountString:SetText(VulnerableCount)
     end
 end

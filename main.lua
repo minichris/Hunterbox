@@ -28,12 +28,14 @@ HunterboxGUI:SetHeight(10)
 HunterboxGUI:SetPoint("CENTER")
 HunterboxGUI:SetMovable(false)
 
-Vulnerable_Create()
+Vulnerable_Create(48)
 local VulnerableGUI
 local VulnerableCooldownGUI
 
 AimedShot_Create()
 
+local HunterboxCountGUI
+local VulnerableCountString
 Count_Create()
 
 
@@ -84,13 +86,7 @@ function HunterboxGUI:ACTIVE_TALENT_GROUP_CHANGED(self, event, ...)
 end
 
 function HunterboxGUI:PLAYER_ENTERING_WORLD(self, event, ...)
-	
-    if(Settings.UseEggo) then
-        demonCounter:SetFont("Interface\\AddOns\\Hunterbox\\Eggo.ttf", 24, "OUTLINE")
-    else 
-        demonCounter:SetFont("Fonts\\FRIZQT__.TTF", 24, "OUTLINE")
-    end
-    
+
 	-- only if they pass the checks will we actually look at the combat log
 	if (isHunter() and isMarksmanship()) then
 		HunterboxGUI:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")

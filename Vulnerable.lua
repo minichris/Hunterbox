@@ -1,11 +1,11 @@
-function Vulnerable_Create()
+function Vulnerable_Create(Size)
     print("Vulnerable Module Loaded")
     VulnerableGUI = CreateFrame("Frame", "VulnerableGUI", GUI)
     VulnerableGUI:SetBackdrop({
         bgFile = "Interface\\Icons\\ability_hunter_mastermarksman",
         edgeFile = "Interface\\tooltips\\UI-tooltip-Border",
         tile = true,
-        tileSize = 64,
+        tileSize = Size,
         edgeSize = 8,
         insets = {
             left = 1,
@@ -14,14 +14,14 @@ function Vulnerable_Create()
             bottom = 1,
         },
     })
-    VulnerableGUI:SetWidth(64)
-    VulnerableGUI:SetHeight(64)
+    VulnerableGUI:SetWidth(Size)
+    VulnerableGUI:SetHeight(Size)
     VulnerableGUI:SetPoint("CENTER", 50, 50)
 
     VulnerableCooldownGUI = CreateFrame("Cooldown", "VulnerableCooldownGUI", VulnerableGUI, "CooldownFrameTemplate")
     VulnerableCooldownGUI:SetAllPoints()
-    VulnerableCooldownGUI:SetWidth(64)
-    VulnerableCooldownGUI:SetHeight(64)
+    VulnerableCooldownGUI:SetWidth(Size)
+    VulnerableCooldownGUI:SetHeight(Size)
     VulnerableCooldownGUI:SetPoint("CENTER", 0, 0)
     VulnerableCooldownGUI:Show()
     VulnerableCooldownGUI:SetAllPoints()
