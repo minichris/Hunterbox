@@ -9,24 +9,7 @@ local function ShowWindow(bool)
     end
 end
 
-local HunterboxGUI = CreateFrame("Frame", "HunterboxGUI", UIParent)
-HunterboxGUI:SetBackdrop({
-	bgFile = "Interface\\dialogframe\\ui-dialogbox-background-dark",
-	edgeFile = "Interface\\tooltips\\UI-tooltip-Border",
-	tile = true,
-	tileSize = 32,
-	edgeSize = 8,
-	insets = {
-		left = 1,
-		right = 1,
-		top = 1,
-		bottom = 1,
-	},
-})
-HunterboxGUI:SetWidth(10)
-HunterboxGUI:SetHeight(10)
-HunterboxGUI:SetPoint("CENTER")
-HunterboxGUI:SetMovable(false)
+local HunterboxGUI = CreateFrame("Frame", "HunterboxGUI", UIParent) --we dont really want this to be a physical window, its just technical right now
 
 Vulnerable_Create(48)
 local VulnerableGUI
