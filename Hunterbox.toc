@@ -1,5 +1,5 @@
 ## Interface: 70100
-## Title: Warlockbox
+## Title: Hunterbox
 ## Author: Zaperox
 ## Version: 0.01
 ## Notes: Displays information on vulnerable
