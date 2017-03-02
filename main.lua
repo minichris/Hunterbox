@@ -107,6 +107,19 @@ function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)
     Count_CombatLog(...)
 end
 
+SlashCmdList['HUNTERBOX_SLASHCMD'] = function(msg)
+    if(msg == "debug" or msg == "") then
+        VulnerableCount = 8
+        for i = 1, 7 do
+            local TimerLength = 30
+            CooldownGUI = Create_Cooldown(AimedShotGUI, i * 32 - 50, TimerLength)
+            Vulnerable_CombatLog("Marked Shot", UnitGUID("target"))
+        end
+    end
+end
+SLASH_HUNTERBOX_SLASHCMD1 = '/hb'
+SLASH_HUNTERBOX_SLASHCMD2 = '/hunterbox'
+
 HunterboxGUI:SetScript("OnEvent", function(self, event, ...)
     self[event](self, event, ...)
 end)
