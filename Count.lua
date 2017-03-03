@@ -19,7 +19,6 @@ function Count_Create()
     HunterboxCountGUI:SetWidth(70)
     HunterboxCountGUI:SetHeight(30)
     HunterboxCountGUI:SetPoint("RIGHT", VulnerableGUI, 40, 0)
-    HunterboxCountGUI:SetMovable(false)
     HunterboxCountGUI:SetFrameStrata("LOW") --stick it behind the vulnerableGUI
     
     VulnerableCountString = HunterboxCountGUI:CreateFontString("VulnerableCountString")

@@ -4,6 +4,7 @@
 ## Version: 0.01
 ## Notes: Displays information on vulnerable
 
+ZapLib.lua
 Vulnerable.lua
 AimedShot.lua
 Count.lua

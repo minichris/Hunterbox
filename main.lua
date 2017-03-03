@@ -1,4 +1,5 @@
 local alreadyRegistered = false
+local HunterBox_Unlocked = false
 Hunterbox_PingCoefficient = 0.400 --Assume about 400ms ping
 
 local function ShowWindow(bool)
@@ -11,9 +12,7 @@ end
 
 local HunterboxGUI = CreateFrame("Frame", "HunterboxGUI", UIParent) --we dont really want this to be a physical window, its just technical right now
 
-Vulnerable_Create(48)
-local VulnerableGUI
-local VulnerableCooldownGUI
+local VulnerableGUI = Vulnerable_Create(48)
 
 AimedShot_Create()
 
@@ -108,13 +107,23 @@ function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)
 end
 
 SlashCmdList['HUNTERBOX_SLASHCMD'] = function(msg)
-    if(msg == "debug" or msg == "") then
+    if(msg == "debug") then
         VulnerableCount = 8
         for i = 1, 7 do
-            local TimerLength = 30
-            CooldownGUI = Create_Cooldown(AimedShotGUI, i * 32 - 50, TimerLength)
-            Vulnerable_CombatLog("Marked Shot", UnitGUID("target"))
+            local DebugLength = 20
+            CooldownGUI = Create_Cooldown(AimedShotGUI, i * 32 - 50, DebugLength)
+            VulnerableGUI:Show()
+            VulnerableCooldownGUI:SetCooldown(GetTime(), DebugLength)
         end
+    elseif(msg == "lock toggle" or msg == "lt") then
+        if (HunterBox_Unlocked) then
+            HunterBox_Unlocked = false
+            print("Box is now locked.")
+        else 
+            HunterBox_Unlocked = true
+            print("Box is now unlocked")
+        end
+        ZapLib_FrameMoveable(HunterBox_Unlocked, VulnerableGUI)
     end
 end
 SLASH_HUNTERBOX_SLASHCMD1 = '/hb'

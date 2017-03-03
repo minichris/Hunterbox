@@ -1,6 +1,6 @@
 function Vulnerable_Create(Size)
     print("Vulnerable Module Loaded")
-    VulnerableGUI = CreateFrame("Frame", "VulnerableGUI", GUI)
+    local VulnerableGUI = CreateFrame("Frame", "VulnerableGUI", UIParent)
     VulnerableGUI:SetBackdrop({
         bgFile = "Interface\\Icons\\ability_hunter_mastermarksman",
         edgeFile = "Interface\\tooltips\\UI-tooltip-Border",
@@ -17,14 +17,17 @@ function Vulnerable_Create(Size)
     VulnerableGUI:SetWidth(Size)
     VulnerableGUI:SetHeight(Size)
     VulnerableGUI:SetPoint("CENTER", 50, 50)
+    VulnerableGUI:SetMovable(true)
 
-    VulnerableCooldownGUI = CreateFrame("Cooldown", "VulnerableCooldownGUI", VulnerableGUI, "CooldownFrameTemplate")
+    local VulnerableCooldownGUI = CreateFrame("Cooldown", "VulnerableCooldownGUI", VulnerableGUI, "CooldownFrameTemplate")
     VulnerableCooldownGUI:SetAllPoints()
     VulnerableCooldownGUI:SetWidth(Size)
     VulnerableCooldownGUI:SetHeight(Size)
     VulnerableCooldownGUI:SetPoint("CENTER", 0, 0)
     VulnerableCooldownGUI:Show()
     VulnerableCooldownGUI:SetAllPoints()
+    
+    return VulnerableGUI
 end
 
 function Vulnerable_CombatLog(spellName, destGUID)
