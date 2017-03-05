@@ -33,13 +33,9 @@ end
 function Count_CombatLog(...)
     local combatEvent = select(1, ...)
 	local sourceGUID = select(3, ...)
-	local sourceName = select(4, ...)
-	local destGUID = select(7, ...)
-	local destName = select(8, ...)
     local spellId = select(11, ...)
-    local spellName = select(12, ...)
     
-    if(combatEvent == "SPELL_AURA_APPLIED" and spellName == "Vulnerable" and sourceGUID == UnitGUID("Player")) then
+    if(combatEvent == "SPELL_AURA_APPLIED" and spellId == 187131 and sourceGUID == UnitGUID("Player")) then --Vulnerable: 187131
         local VulnerableLength = 7
         VulnerableCount = VulnerableCount + 1
         C_Timer.After(VulnerableLength, function() 
