@@ -1,6 +1,7 @@
 local alreadyRegistered = false
 local HunterBox_Unlocked = false
-Hunterbox_PingCoefficient = 0.400 --Assume about 400ms ping
+local DebugMode = false
+Hunterbox_PingCoefficient = 0.500 --Assume about 400ms ping
 
 local function ShowWindow(bool)
     if(bool and InCombatLockdown()) then
@@ -14,7 +15,8 @@ local HunterboxGUI = CreateFrame("Frame", "HunterboxGUI", UIParent) --we dont re
 
 local VulnerableGUI = Vulnerable_Create(48)
 
-AimedShot_Create()
+local AimedShotMiniGUIs = {}
+local AimedShotGUI = AimedShot_Create()
 
 local HunterboxCountGUI
 local VulnerableCountString
@@ -101,29 +103,45 @@ function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)
     local spellId = select(11, ...)
     local spellName = select(12, ...)
 	
-    Vulnerable_CombatLog(spellName, destGUID)
-    AimedShot_CombatLog(spellName, destGUID)
-    Count_CombatLog(...)
+    if(not DebugMode) then
+        Vulnerable_CombatLog(spellName, destGUID)
+        AimedShot_CombatLog(spellName, destGUID)
+        Count_CombatLog(...)
+    end
 end
 
 SlashCmdList['HUNTERBOX_SLASHCMD'] = function(msg)
-    if(msg == "debug") then
-        VulnerableCount = 8
-        for i = 1, 7 do
-            local DebugLength = 20
-            CooldownGUI = Create_Cooldown(AimedShotGUI, i * 32 - 50, DebugLength)
-            VulnerableGUI:Show()
-            VulnerableCooldownGUI:SetCooldown(GetTime(), DebugLength)
-        end
-    elseif(msg == "lock toggle" or msg == "lt") then
+    if(msg == "lock" or msg == "lt") then
         if (HunterBox_Unlocked) then
             HunterBox_Unlocked = false
+            DebugMode = false
+            AimedShotGUI:SetBackdrop(nil)
             print("Box is now locked.")
         else 
             HunterBox_Unlocked = true
+            for i = 1, 5 do
+                CooldownGUI = Create_Cooldown(AimedShotGUI, i * 32, i*7, "debug")
+            end
+            AimedShotGUI:SetBackdrop({
+                bgFile = "Interface\\Icons\\Inr_07",
+                edgeFile = "Interface\\tooltips\\UI-tooltip-Border",
+                tile = true,
+                tileSize = 32,
+                edgeSize = 8,
+                insets = {
+                    left = 1,
+                    right = 1,
+                    top = 1,
+                    bottom = 1,
+                },
+            })
+            DebugMode = true
+            VulnerableGUI:Show()
+            VulnerableCooldownGUI:SetCooldown(GetTime(), 20)
             print("Box is now unlocked")
         end
         ZapLib_FrameMoveable(HunterBox_Unlocked, VulnerableGUI)
+        ZapLib_FrameMoveable(HunterBox_Unlocked, AimedShotGUI)
     end
 end
 SLASH_HUNTERBOX_SLASHCMD1 = '/hb'
