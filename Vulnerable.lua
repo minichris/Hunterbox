@@ -24,8 +24,21 @@ function Vulnerable_Create(Size)
     VulnerableCooldownGUI:SetWidth(Size)
     VulnerableCooldownGUI:SetHeight(Size)
     VulnerableCooldownGUI:SetPoint("CENTER", 0, 0)
-    VulnerableCooldownGUI:Show()
+    VulnerableCooldownGUI:Hide()
+    VulnerableCooldownGUI:SetHideCountdownNumbers(true)
     VulnerableCooldownGUI:SetAllPoints()
+    
+    local CurrentDamageIncreaseString = VulnerableCooldownGUI:CreateFontString("CurrentDamageIncreaseString")
+    CurrentDamageIncreaseString:SetFont("Fonts\\FRIZQT__.TTF", 18, "OUTLINE")
+    CurrentDamageIncreaseString:SetTextColor(1, 1, 1, 1)
+    CurrentDamageIncreaseString:SetText("1")
+    CurrentDamageIncreaseString:SetJustifyH("CENTER")
+    CurrentDamageIncreaseString:SetJustifyV("CENTER")
+    CurrentDamageIncreaseString:SetPoint("CENTER", VulnerableCooldownGUI, -2, -2)
+    VulnerableGUI:SetScript("OnUpdate", function(self, elapsed)
+        local startTime, duration = VulnerableCooldownGUI:GetCooldownTimes()
+        CurrentDamageIncreaseString:SetText((170 - 10*ceil((startTime + duration)/1000 - GetTime())).."%")
+    end)
     
     return VulnerableGUI
 end
