@@ -35,7 +35,7 @@ function Create_Cooldown(InputGUI, yLocation, TimeLeft, percentDamage)
     CooldownPinwheelGUI:SetAllPoints()
     
     local DamageIncreaseString = InputGUI:CreateFontString("DamageIncreaseString")
-    DamageIncreaseString:SetFont("Interface\\AddOns\\Warlockbox\\Eggo.ttf", 24, "OUTLINE")
+    DamageIncreaseString:SetFont("Fonts\\FRIZQT__.TTF", 18, "OUTLINE")
     DamageIncreaseString:SetTextColor(1, 1, 1, 1)
     DamageIncreaseString:SetText(percentDamage.."%")
     DamageIncreaseString:SetJustifyH("LEFT")

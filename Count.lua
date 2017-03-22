@@ -22,7 +22,7 @@ function Count_Create()
     HunterboxCountGUI:SetFrameStrata("LOW") --stick it behind the vulnerableGUI
     
     VulnerableCountString = HunterboxCountGUI:CreateFontString("VulnerableCountString")
-    VulnerableCountString:SetFont("Interface\\AddOns\\Warlockbox\\Eggo.ttf", 24, "OUTLINE")
+    VulnerableCountString:SetFont("Fonts\\FRIZQT__.TTF", 18, "OUTLINE")
     VulnerableCountString:SetTextColor(1, 1, 1, 1)
     VulnerableCountString:SetText("")
     VulnerableCountString:SetJustifyH("CENTER")
