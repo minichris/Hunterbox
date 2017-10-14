@@ -3,8 +3,17 @@ local HunterBox_Unlocked = false
 local DebugMode = false
 Hunterbox_PingCoefficient = 0.500 --Assume about 400ms ping
 
+local function isMarksmanship()
+	local _, class = UnitClass("player")
+    if (class == "HUNTER" and GetSpecialization() == 2) then
+		return true
+	else
+		return false
+	end
+end
+
 local function ShowWindow(bool)
-    if(bool and InCombatLockdown()) then
+    if(bool and InCombatLockdown() and isMarksmanship()) then
         HunterboxGUI:Show()
     else
         HunterboxGUI:Hide()
@@ -12,7 +21,7 @@ local function ShowWindow(bool)
 end
 
 local HunterboxGUI = CreateFrame("Frame", "HunterboxGUI", UIParent) --we dont really want this to be a physical window, its just technical right now
-
+ShowWindow(false) --don't show the window before its needed
 local VulnerableGUI = Vulnerable_Create(48)
 
 local AimedShotMiniGUIs = {}
@@ -22,37 +31,17 @@ local HunterboxCountGUI
 local VulnerableCountString
 Count_Create()
 
-
-local function isMarksmanship()
-	if (GetSpecialization() == 2) then
-        return true
-    else
-        return false
-    end
-end
-
-local function isHunter()
-    local _, class = UnitClass("player")
-    if (class == "HUNTER") then
-        return true
-    else
-        return false
-    end
-end
-
 local function RegisterifyAddon()
-if (isHunter() and isMarksmanship()) then
+if (isMarksmanship()) then
 		if not alreadyRegistered then
 			HunterboxGUI:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			alreadyRegistered = true
 		end
-		ShowWindow(true)
 	else
 		if alreadyRegistered then
 			HunterboxGUI:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			alreadyRegistered = false
 		end
-		HunterboxGUI:Hide()
 	end
 end
 
@@ -70,31 +59,16 @@ function HunterboxGUI:ACTIVE_TALENT_GROUP_CHANGED(self, event, ...)
 end
 
 function HunterboxGUI:PLAYER_ENTERING_WORLD(self, event, ...)
-
-	-- only if they pass the checks will we actually look at the combat log
-	if (isHunter() and isMarksmanship()) then
-		HunterboxGUI:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		ShowWindow(true)
-		alreadyRegistered = true
-	else
-		HunterboxGUI:Hide()
-	end
-	
-	-- events to watch to see if they switched to a demo spec
+	RegisterifyAddon()	
+	-- events to watch to see if they switched spec
 	HunterboxGUI:RegisterEvent("CHARACTER_POINTS_CHANGED")
 	HunterboxGUI:RegisterEvent("PLAYER_TALENT_UPDATE")
 	HunterboxGUI:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-	
 	HunterboxGUI:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
+-- Combat Log
 function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)  
-    if(not InCombatLockdown()) then
-        HunterboxGUI:Hide()
-    else
-        HunterboxGUI:Show()
-    end
-
 	local combatEvent = select(1, ...)
 	local sourceGUID = select(3, ...)
 	local sourceName = select(4, ...)
@@ -110,6 +84,8 @@ function HunterboxGUI:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)
     end
 end
 
+
+-- Commands
 SlashCmdList['HUNTERBOX_SLASHCMD'] = function(msg)
     if(msg == "lock" or msg == "lt") then
         if (HunterBox_Unlocked) then

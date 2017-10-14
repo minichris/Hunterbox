@@ -1,5 +1,22 @@
+-- Patient Sniper talent data
+local PatientSniperDamageBonusPercent = 0; --the amount Patient Sniper increases the damage bonus of Vulnerable every 1 sec
+local VulnerableDamageBonusPercent = 130; --the amount of damage increased by regular Vulnerable
+
+local function HasPatientSniper() --check if player hads the Patient Sniper talent
+	_, _, _, selected = GetTalentInfo(4, 3, 1);
+	
+	if selected then
+		PatientSniperDamageBonusPercent = 6;
+	else
+		PatientSniperDamageBonusPercent = 0;
+	end
+	
+	return selected;
+end
+
 function Vulnerable_Create(Size)
     print("Vulnerable Module Loaded")
+	HasPatientSniper();
     local VulnerableGUI = CreateFrame("Frame", "VulnerableGUI", UIParent)
     VulnerableGUI:SetBackdrop({
         bgFile = "Interface\\Icons\\ability_hunter_mastermarksman",
@@ -24,20 +41,24 @@ function Vulnerable_Create(Size)
     VulnerableCooldownGUI:SetWidth(Size)
     VulnerableCooldownGUI:SetHeight(Size)
     VulnerableCooldownGUI:SetPoint("CENTER", 0, 0)
-    VulnerableCooldownGUI:Hide()
     VulnerableCooldownGUI:SetHideCountdownNumbers(true)
     VulnerableCooldownGUI:SetAllPoints()
+	VulnerableCooldownGUI:Show()
     
     local CurrentDamageIncreaseString = VulnerableCooldownGUI:CreateFontString("CurrentDamageIncreaseString")
     CurrentDamageIncreaseString:SetFont("Fonts\\FRIZQT__.TTF", 18, "OUTLINE")
     CurrentDamageIncreaseString:SetTextColor(1, 1, 1, 1)
-    CurrentDamageIncreaseString:SetText("1")
     CurrentDamageIncreaseString:SetJustifyH("CENTER")
     CurrentDamageIncreaseString:SetJustifyV("CENTER")
     CurrentDamageIncreaseString:SetPoint("CENTER", VulnerableCooldownGUI, -2, -2)
     VulnerableGUI:SetScript("OnUpdate", function(self, elapsed)
-        local startTime, duration = VulnerableCooldownGUI:GetCooldownTimes()
-        CurrentDamageIncreaseString:SetText((170 - 10*ceil((startTime + duration)/1000 - GetTime())).."%")
+        local startTime, duration = VulnerableCooldownGUI:GetCooldownTimes();
+        CurrentDamageIncreaseString:SetText(VulnerableDamageBonusPercent + (PatientSniperDamageBonusPercent * (7 - ceil((startTime + duration)/1000 - GetTime()))) .. "%" );
+		if(UnitDebuff("target", "Vulnerable") ~= nil) then
+			VulnerableGUI:Show();
+		else
+			VulnerableGUI:Hide();
+		end
     end)
     
     return VulnerableGUI
